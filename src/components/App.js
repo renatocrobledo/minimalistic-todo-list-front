@@ -7,13 +7,6 @@ import SweetAlert from '../components/SweetAlert';
 import moment from 'moment';
 import { Button } from 'react-bootstrap';
 
-// tasks: {
-//   1:
-//   2:
-//   3:
-// }
-
-
 class App extends Component {
   state = {
     tasks: [],
@@ -58,16 +51,16 @@ class App extends Component {
   deleteTask = (id) => {
     if(id) {
       TasksService.delete(id)
-        .then((response) => {
-          this.getTasks();
-          this.closeAlert();
-        });
+      .then((response) => {
+        this.getTasks();
+        this.closeAlert();
+      });
     }
   }
 
 
   taskClick = (id, e) => {
-    // const selectedTask = this.getState({ tasks[id] });
+
     const selectedTask = {
       id,
       status: e.target.getAttribute('data-status'),
@@ -87,7 +80,7 @@ class App extends Component {
 
     if (dataToUpdate) {
       TasksService.update(id, dataToUpdate)
-        .then((response) => {
+        .then((response)=>{
           this.getTasks();
           this.closeAlert();
       });
@@ -105,13 +98,13 @@ class App extends Component {
   }
 
   deleteAll = () => {
-    this.state.tasks.forEach((task) => {
+    this.state.tasks.forEach((task)=>{
       this.deleteTask(task._id);
     });
   }
 
   setAllDone = () => {
-    this.state.tasks.forEach((task) => {
+    this.state.tasks.forEach((task)=>{
       this.updateTask(task._id, {status: 'done'});
     });
   }
@@ -139,26 +132,12 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
         </div>
           <div>
-            <input
-              ref='taskEntry'
-              className="Task-imput"
-              onKeyPress={(e) => this.createTask(e)}
-              type="text"
-              placeholder="Type your task here and press enter!"
-            />
+            <input ref='taskEntry' className="Task-imput" onKeyPress={(e) => this.createTask(e)} type="text" placeholder="Type your task here and press enter!" />
           </div>
           <br />
           {clearBtns}
           {tasks}
-          <SweetAlert
-            updateTask={this.updateTask}
-            setUpdate={this.setUpdate}
-            deleteTask={this.deleteTask}
-            handleChange={this.handleChange}
-            show={this.state.showSweetAlert}
-            closeAlert={this.closeAlert}
-            selectedTask={this.state.selectedTask}
-          />
+          <SweetAlert updateTask={this.updateTask} setUpdate={this.setUpdate} deleteTask={this.deleteTask} handleChange={this.handleChange} show={this.state.showSweetAlert} closeAlert={this.closeAlert} selectedTask={this.state.selectedTask}/>
       </div>
     );
   }
