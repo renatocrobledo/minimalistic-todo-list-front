@@ -26,20 +26,4 @@ const toggleStatusClass = status === 'new' ? 'done' : 'new';
   );
 };
 
-/*
-
-<SweetAlert
-	input
-	showCancel
-	cancelBtnBsStyle="default"
-	title="An input!"
-	inputPlaceHolder="Write something"
-	onConfirm={this.onRecieveInput}
-	onCancel={this.hideAlert}
->
-	Write something interesting:
-</SweetAlert>
-
-*/
-
 export default Sweet;
