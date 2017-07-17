@@ -1,4 +1,5 @@
-const URL = 'http://localhost:5000/tasks';
+import { API_URL } from '../constants';
+
 const myHeaders = new Headers();
 myHeaders.append('Content-Type', 'application/json');
 
@@ -7,36 +8,33 @@ export default {
     return response.json();
   },
   create(text) {
-    return fetch(URL, {
+    return fetch(API_URL, {
         method: 'POST',
         body: JSON.stringify({
-           text,
-           createdAt: Date.now(),
-           status: 'new'
+           text
          }),
         headers: myHeaders
       })
       .then(this.returnResponse);
   },
   get() {
-    return fetch(URL)
+    return fetch(API_URL)
       .then(this.returnResponse)
   },
   getTodo(id) {
-    return fetch(`${URL}/${id}`)
+    return fetch(`${API_URL}/${id}`)
       .then(this.returnResponse)
   },
   update(id, data) {
-    const updatedData = Object.assign({updatedAt: Date.now()}, data);
-    return fetch(`${URL}/${id}`, {
+    return fetch(`${API_URL}/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(updatedData),
+      body: JSON.stringify(data),
       headers: myHeaders
     })
     .then(this.returnResponse)
   },
   delete(id) {
-    return fetch(`${URL}/${id}`, {
+    return fetch(`${API_URL}/${id}`, {
       method: 'DELETE',
       headers: myHeaders
     })
