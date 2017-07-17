@@ -9,20 +9,29 @@ import { Button } from 'react-bootstrap';
 
 class App extends Component {
   state = {
-    tasks: [],
+    tasks: {},
     updatedData: {},
     showSweetAlert: false,
     selectedTask: {}
   }
 
+  mergeTasks = (acc, task) => {
+    const actualTask = {
+      [task._id]: task
+    };
+    actualTask[task._id].createdAt = moment(task.createdAt).format("MMMM DD, YYYY, HH:mm  ");
+    return Object.assign(acc, actualTask);
+  }
+
   getTasks = () => {
     TasksService.get()
       .then((tasks) => {
-        this.setState({tasks});
+        const jsonTasks = tasks.reduce(this.mergeTasks,{});
+        this.setState({tasks: jsonTasks});
       });
   }
 
-  componentWillMount()
+  componentWillMount() {
     this.getTasks();
   }
 
@@ -40,9 +49,8 @@ class App extends Component {
       TasksService.create(e.target.value)
         .then((task) => {
           this.refs.taskEntry.value = '';
-          this.refs.taskEntry.placeholder = '';
           this.setState({
-            tasks: [...this.state.tasks, task]
+            tasks: this.mergeTasks(this.state.tasks, task)
           });
       });
     }
@@ -61,12 +69,7 @@ class App extends Component {
 
   taskClick = (id, e) => {
 
-    const selectedTask = {
-      id,
-      status: e.target.getAttribute('data-status'),
-      text: e.target.getAttribute('data-value'),
-      createdAt: e.target.getAttribute('data-created-at'),
-    };
+    const selectedTask = this.state.tasks[id];
 
     this.setState({
       selectedTask,
@@ -88,6 +91,7 @@ class App extends Component {
   }
 
   setUpdate = (id, updatedData, e) => {
+
     if(e && e.key === 'Enter') this.updateTask(id);
 
     if(updatedData) {
@@ -98,14 +102,14 @@ class App extends Component {
   }
 
   deleteAll = () => {
-    this.state.tasks.forEach((task)=>{
-      this.deleteTask(task._id);
+    Object.keys(this.state.tasks).forEach((taskId)=>{
+      this.deleteTask(taskId);
     });
   }
 
   setAllDone = () => {
-    this.state.tasks.forEach((task)=>{
-      this.updateTask(task._id, {status: 'done'});
+    Object.keys(this.state.tasks).forEach((taskId)=>{
+      this.updateTask(taskId, {status: 'done'});
     });
   }
 
@@ -119,10 +123,19 @@ class App extends Component {
   }
 
   render() {
-    const tasks = this.state.tasks.map((t) => {
-      const createdAt = moment(t.createdAt * 1).format("MMMM DD, YYYY, HH:mm  ");
-      return <Task status={t.status} createdAt={createdAt} text={t.text} key={t._id} id={t._id} onClick={this.taskClick}/>
+
+    const tasks = Object.keys(this.state.tasks).map((taskId) => {
+      const {status, text, createdAt} = this.state.tasks[taskId];
+      return <Task
+                status={status}
+                text={text}
+                key={taskId}
+                id={taskId}
+                createdAt={createdAt}
+                onClick={this.taskClick}
+              />
     });
+
 
     const clearBtns = tasks.length ? this.getClearBtns() : null;
 
@@ -132,13 +145,26 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
         </div>
           <div>
-            <input ref='taskEntry' className="Task-imput" onKeyPress={(e) => this.createTask(e)} type="text" placeholder="Type your task here and press enter!" />
+            <input
+              type="text"
+              placeholder="Type your task here and press enter!"
+              ref='taskEntry'
+              className="Task-imput"
+              onKeyPress={(e) => this.createTask(e)}
+            />
           </div>
           <br />
           {clearBtns}
           {tasks}
           <SweetAlert
-          updateTask={this.updateTask} setUpdate={this.setUpdate} deleteTask={this.deleteTask} handleChange={this.handleChange} show={this.state.showSweetAlert} closeAlert={this.closeAlert} selectedTask={this.state.selectedTask}/>
+            updateTask={this.updateTask}
+            setUpdate={this.setUpdate}
+            deleteTask={this.deleteTask}
+            handleChange={this.handleChange}
+            show={this.state.showSweetAlert}
+            closeAlert={this.closeAlert}
+            selectedTask={this.state.selectedTask}
+          />
       </div>
     );
   }
