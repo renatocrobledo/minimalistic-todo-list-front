@@ -1,5 +1,5 @@
 
-#minimalistic-todo-list
+# minimalistic-todo-list (front)
 
 To Run the project just execute
 ```npm start```
