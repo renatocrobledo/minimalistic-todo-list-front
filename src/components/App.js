@@ -22,7 +22,7 @@ class App extends Component {
       });
   }
 
-  componentWillMount() {
+  componentWillMount()
     this.getTasks();
   }
 
@@ -137,7 +137,8 @@ class App extends Component {
           <br />
           {clearBtns}
           {tasks}
-          <SweetAlert updateTask={this.updateTask} setUpdate={this.setUpdate} deleteTask={this.deleteTask} handleChange={this.handleChange} show={this.state.showSweetAlert} closeAlert={this.closeAlert} selectedTask={this.state.selectedTask}/>
+          <SweetAlert
+          updateTask={this.updateTask} setUpdate={this.setUpdate} deleteTask={this.deleteTask} handleChange={this.handleChange} show={this.state.showSweetAlert} closeAlert={this.closeAlert} selectedTask={this.state.selectedTask}/>
       </div>
     );
   }
